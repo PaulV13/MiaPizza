@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MIAPIZZA</string>
+    <string name="icon_back">icon back</string>
+    <string name="image_detail">image detail</string>
+    <string name="symbol_price">$</string>
+    <string name="gusto">gusto</string>
+    <string name="icon_up">icon up</string>
+    <string name="icon_down">icon down</string>
+    <string name="panceta">Panceta</string>
+    <string name="jamon">Jamon</string>
+    <string name="aceituna">Aceituna</string>
+    <string name="anana">Anana</string>
+    <string name="huevo">Huevo</string>
+    <string name="lechuga">Lechuga</string>
+    <string name="pepino">Pepino</string>
+    <string name="add">Agregar</string>
+    <string name="symbol_minus">symbol minus</string>
+    <string name="symbol_add">symbol add</string>
+    <string name="cart_title">Mi pedido</string>
+    <string name="text_pagar">Ir a pagar</string>
+    <string name="btn_pedido">Ir a pedido</string>
+</resources>

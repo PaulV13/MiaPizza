@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/pizzaList">
+    <fragment
+        android:id="@+id/pizzaList"
+        android:name="com.example.miapizza.ui.view.PizzaListFragment"
+        android:label="fragment_pizza_list"
+        tools:layout="@layout/fragment_pizza_list" >
+        <action
+            android:id="@+id/action_pizzaList_to_pizzaDetail"
+            app:destination="@id/pizzaDetail" />
+        <action
+            android:id="@+id/action_pizzaList_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pizzaDetail"
+        android:name="com.example.miapizza.ui.view.PizzaDetailFragment"
+        android:label="fragment_pizza_detail"
+        tools:layout="@layout/fragment_pizza_detail" >
+        <action
+            android:id="@+id/action_pizzaDetail_to_pizzaList"
+            app:destination="@id/pizzaList" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.miapizza.ui.view.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_pizzaList"
+            app:destination="@id/pizzaList" />
+    </fragment>
+</navigation>
