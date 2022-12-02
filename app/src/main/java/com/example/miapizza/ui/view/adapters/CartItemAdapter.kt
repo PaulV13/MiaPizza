@@ -9,7 +9,7 @@ import com.example.miapizza.data.model.CartItem
 class CartItemAdapter(
     private val cartItemList: MutableList<CartItem>,
     private val onClickMinus: (CartItem, Int) -> Unit,
-    private val onClickAdd: (CartItem) -> Unit
+    private val onClickAdd: (CartItem, Int) -> Unit
     ): RecyclerView.Adapter<CartItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartItemViewHolder {

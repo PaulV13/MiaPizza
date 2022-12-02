@@ -15,7 +15,7 @@ class CartItemViewHolder(view: View) : RecyclerView.ViewHolder(view){
     fun render(
         cartItem: CartItem,
         onClickMinus: (CartItem, Int) -> Unit,
-        onClickAdd: (CartItem) -> Unit
+        onClickAdd: (CartItem, Int) -> Unit
     ){
         binding.pizzaTitle.text = cartItem.pizza.title
         binding.pizzaPrice.text = cartItem.pizza.price.toString()
@@ -30,7 +30,7 @@ class CartItemViewHolder(view: View) : RecyclerView.ViewHolder(view){
         }
 
         binding.symbolMinus.setOnClickListener { onClickMinus(cartItem, adapterPosition) }
-        binding.symbolAdd.setOnClickListener { onClickAdd(cartItem) }
+        binding.symbolAdd.setOnClickListener { onClickAdd(cartItem, adapterPosition) }
 
         val adapter = CartIngredientAdapter(cartItem.pizza.ingredients)
         binding.rvIngredients.layoutManager = LinearLayoutManager(binding.pizzaImage.context)

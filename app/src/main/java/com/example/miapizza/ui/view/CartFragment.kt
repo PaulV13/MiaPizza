@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -51,10 +52,20 @@ class CartFragment @Inject constructor()  : Fragment(){
             }
         }
 
+        lifecycleScope.launchWhenStarted {
+            viewmodel.credit.collect{
+                binding.credit.text = viewmodel.credit.value.toString()
+            }
+        }
+
+        binding.totalPrice.setOnClickListener {
+            viewmodel.updateCredit()
+        }
+
         adapter = CartItemAdapter(
             cartItemList = viewmodel.listCartItem.value,
             onClickMinus = {cartItem, position -> minusQuantityItem(cartItem, position)},
-            onClickAdd = {cartItem -> addQuantityItem(cartItem)}
+            onClickAdd = {cartItem, position -> addQuantityItem(cartItem, position)}
         )
 
         binding.rvList.layoutManager = LinearLayoutManager(context)
@@ -65,21 +76,27 @@ class CartFragment @Inject constructor()  : Fragment(){
         }
 
         binding.btnPagar.setOnClickListener {
-            viewmodel.resetCart()
-            Navigation.findNavController(it).popBackStack()
+
+            if(viewmodel.credit.value < viewmodel.totalPrice.value){
+                Toast.makeText(context,"No tiene creditos suficientes para finalizar compra",Toast.LENGTH_LONG).show()
+            }else{
+                viewmodel.descountCredit()
+                viewmodel.resetCart()
+                Navigation.findNavController(it).popBackStack()
+            }
         }
     }
 
-    private fun addQuantityItem(cartItem: CartItem){
+    private fun addQuantityItem(cartItem: CartItem, position: Int){
         viewmodel.addCartItemQuantity(cartItem)
         viewmodel.updateSubTotalPrice()
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemChanged(position)
     }
 
     private fun minusQuantityItem(cartItem: CartItem, position: Int) {
         viewmodel.minusCartItemQuantity(cartItem)
         viewmodel.updateSubTotalPrice()
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemChanged(position)
 
         if(cartItem.quantity == 0){
             deleteItem(cartItem, position)

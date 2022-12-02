@@ -42,16 +42,20 @@ class PizzaViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading : StateFlow<Boolean> get() = _isLoading
 
+    private val _credit = MutableStateFlow(1000)
+    val credit : StateFlow<Int> get() = _credit
+
     private var _pizza = MutableStateFlow(
         Pizza(
-        id = 0,
-        title = "",
-        image = R.drawable.margarita,
-        ingredients = mutableListOf(),
-        description = "",
-        price = 0,
+            id = 0,
+            title = "",
+            image = R.drawable.margarita,
+            ingredients = mutableListOf(),
+            description = "",
+            price = 0,
+        )
     )
-    )
+
     val pizza : StateFlow<Pizza> get() = _pizza
 
     init{
@@ -138,5 +142,13 @@ class PizzaViewModel @Inject constructor(
 
     fun resetCart() {
         _listCartItem.value = mutableListOf()
+    }
+
+    fun updateCredit(){
+        _credit.value = _credit.value + 20
+    }
+
+    fun descountCredit(){
+        _credit.value = _credit.value - _totalPrice.value
     }
 }

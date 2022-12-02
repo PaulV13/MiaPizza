@@ -17,6 +17,7 @@
     <string name="symbol_minus">symbol minus</string>
     <string name="symbol_add">symbol add</string>
     <string name="cart_title">Mi pedido</string>
-    <string name="text_pagar">Ir a pagar</string>
+    <string name="text_pagar">Finalizar compra</string>
     <string name="btn_pedido">Ir a pedido</string>
+    <string name="credit">Credit:</string>
 </resources>
