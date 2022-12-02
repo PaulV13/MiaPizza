@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentPizzaListBinding
 import com.example.miapizza.ui.view.adapters.PizzaAdapter
-import com.example.miapizza.ui.viewmodel.PizzaViewModel
+import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
 import com.example.miapizza.domain.model.Pizza
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -73,7 +73,7 @@ class PizzaListFragment @Inject constructor() : Fragment(R.layout.fragment_pizza
         binding.buttonPrice.text = viewmodel.priceCartItem().toString()
 
         binding.searchView.addTextChangedListener { pizzaFilter ->
-            val pizzasFiltered = pizzaList.filter { pizza -> pizza.title!!.lowercase().contains(pizzaFilter.toString().lowercase()) }
+            val pizzasFiltered = pizzaList.filter { pizza -> pizza.title.lowercase().contains(pizzaFilter.toString().lowercase()) }
             adapter.updatePizzas(pizzasFiltered)
         }
     }

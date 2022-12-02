@@ -18,7 +18,6 @@ class PizzaRepository @Inject constructor(
         return response.map { it.toDomain() }.toMutableList()
     }
 
-
     suspend fun getPizzasFromDatabase(): MutableList<Pizza>{
         val response: MutableList<PizzaEntity> = pizzaDao.getAllPizzas()
         return response.map { it.toDomain() }.toMutableList()

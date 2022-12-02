@@ -1,8 +1,9 @@
-package com.example.miapizza.ui.viewmodel
+package com.example.miapizza.data.database.dao.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.miapizza.R
+import com.example.miapizza.data.model.Cart
 import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.domain.GetPizzasUseCase
 import com.example.miapizza.domain.model.Pizza
@@ -32,8 +33,8 @@ class PizzaViewModel @Inject constructor(
     private val _totalPrice = MutableStateFlow(0)
     val totalPrice: StateFlow<Int> get() = _totalPrice
 
-    private var _listCarItem = MutableStateFlow<MutableList<CartItem>>(mutableListOf())
-    val listCartItem: StateFlow<MutableList<CartItem>> get() = _listCarItem
+    private var _listCartItem = MutableStateFlow<MutableList<CartItem>>(mutableListOf())
+    val listCartItem: StateFlow<MutableList<CartItem>> get() = _listCartItem
 
     private var _listPizzas = MutableStateFlow<MutableList<Pizza>>(mutableListOf())
     val listPizzas: StateFlow<MutableList<Pizza>> get() = _listPizzas
@@ -120,7 +121,7 @@ class PizzaViewModel @Inject constructor(
     }
 
     fun removeItemCart(carItem: CartItem) {
-        _listCarItem.value.remove(carItem)
+        _listCartItem.value.remove(carItem)
     }
 
     fun addCartItemQuantity(item: CartItem) {
@@ -133,5 +134,9 @@ class PizzaViewModel @Inject constructor(
 
     fun selectedPizza(pizza: Pizza) {
         _pizza.value = pizza
+    }
+
+    fun resetCart() {
+        _listCartItem.value = mutableListOf()
     }
 }

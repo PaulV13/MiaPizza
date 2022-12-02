@@ -83,9 +83,9 @@ class PizzaApi @Inject constructor(){
             ),
             PizzaModel(
                 id = 9,
-                title = "Pizza con piña",
+                title = "Pizza con lechuga, pepino y huevo",
                 image = R.drawable.anana,
-                ingredients = mutableListOf("Jamon","Piña"),
+                ingredients = mutableListOf("Lechuga", "Pepino", "Huevo"),
                 description = "Mozzarella, jamon y piña",
                 price = 350,
             ),

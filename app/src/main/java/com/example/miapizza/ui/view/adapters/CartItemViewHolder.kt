@@ -1,6 +1,7 @@
 package com.example.miapizza.ui.view.adapters
 
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.miapizza.R
@@ -30,5 +31,9 @@ class CartItemViewHolder(view: View) : RecyclerView.ViewHolder(view){
 
         binding.symbolMinus.setOnClickListener { onClickMinus(cartItem, adapterPosition) }
         binding.symbolAdd.setOnClickListener { onClickAdd(cartItem) }
+
+        val adapter = CartIngredientAdapter(cartItem.pizza.ingredients)
+        binding.rvIngredients.layoutManager = LinearLayoutManager(binding.pizzaImage.context)
+        binding.rvIngredients.adapter = adapter
     }
 }

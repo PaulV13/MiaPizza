@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentPizzaDetailBinding
 import com.example.miapizza.data.model.CartItem
-import com.example.miapizza.ui.viewmodel.PizzaViewModel
+import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
 import com.example.miapizza.domain.model.Pizza
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -39,7 +39,7 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
         super.onViewCreated(view, savedInstanceState)
 
         var checkboxIsVisible = true
-        var pizza: Pizza = viewmodel.pizza.value
+        val pizza: Pizza = viewmodel.pizza.value
 
         Glide.with(this).load(pizza.image).into(binding.image)
         binding.title.text = pizza.title
@@ -69,6 +69,8 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
             }
             viewmodel.updatePrice(pizza)
         }
+
+        updateCheckBox(pizza)
 
         binding.checkbox1.setOnClickListener {
             onCheckboxClicked(it, pizza)
@@ -114,6 +116,32 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
             list.add(cartItem)
 
             Navigation.findNavController(it).popBackStack()
+        }
+    }
+
+    private fun updateCheckBox(pizza: Pizza) {
+        for (ingredient in pizza.ingredients){
+            if(ingredient == binding.checkbox1.text){
+                binding.checkbox1.isChecked = true
+            }
+            if(ingredient == binding.checkbox2.text){
+                binding.checkbox2.isChecked = true
+            }
+            if(ingredient == binding.checkbox3.text){
+                binding.checkbox3.isChecked = true
+            }
+            if(ingredient == binding.checkbox4.text){
+                binding.checkbox4.isChecked = true
+            }
+            if(ingredient == binding.checkbox5.text){
+                binding.checkbox5.isChecked = true
+            }
+            if(ingredient == binding.checkbox6.text){
+                binding.checkbox6.isChecked = true
+            }
+            if(ingredient == binding.checkbox7.text){
+                binding.checkbox7.isChecked = true
+            }
         }
     }
 

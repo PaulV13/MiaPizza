@@ -5,16 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.miapizza.databinding.FragmentCartBinding
-import com.example.miapizza.data.model.Cart
 import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.ui.view.adapters.CartItemAdapter
-import com.example.miapizza.ui.viewmodel.PizzaViewModel
+import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -31,7 +29,7 @@ class CartFragment @Inject constructor()  : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCartBinding.inflate(inflater,container,false)
         return binding.root
     }
@@ -67,16 +65,8 @@ class CartFragment @Inject constructor()  : Fragment(){
         }
 
         binding.btnPagar.setOnClickListener {
-            val cart = Cart(
-                viewmodel.listCartItem.value,
-                viewmodel.subTotalPrice.value,
-                viewmodel.subTotalPrice.value + viewmodel.priceSend.value
-            )
-
-            Toast.makeText(context, cart.cartList.map {
-                it.pizza.title + " " + it.pizza.description
-            }.toString() + "\n - Subtotal:" +
-                    cart.subtotalPrice + "\n - Total price: " + cart.totalPrice,Toast.LENGTH_LONG).show()
+            viewmodel.resetCart()
+            Navigation.findNavController(it).popBackStack()
         }
     }
 
