@@ -1,19 +1,21 @@
 package com.example.miapizza.ui.view
 
+import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.miapizza.R
-import com.example.miapizza.databinding.FragmentPizzaDetailBinding
-import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
+import com.example.miapizza.data.model.CartItem
+import com.example.miapizza.databinding.FragmentPizzaDetailBinding
 import com.example.miapizza.domain.model.Pizza
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,7 +40,6 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var checkboxIsVisible = true
         val pizza: Pizza = viewmodel.pizza.value
 
         Glide.with(this).load(pizza.image).into(binding.image)
@@ -53,14 +54,18 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
             Navigation.findNavController(it).popBackStack()
         }
 
+        binding.listCheckbox.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
         binding.iconUp.setOnClickListener {
-            if(checkboxIsVisible){
+            if(viewmodel.gustosIsVisible.value){
                 it.rotationX = 180f
             }else{
                 it.rotationX = 0f
             }
-            checkboxIsVisible = !checkboxIsVisible
-            changeVisibleCheckbox(checkboxIsVisible)
+
+            viewmodel.changeGustosVisibility()
+
+            changeVisibleCheckbox()
         }
 
         binding.symbolMinus.setOnClickListener {
@@ -145,8 +150,8 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
         }
     }
 
-    private fun changeVisibleCheckbox(checkboxIsVisible: Boolean) {
-        if(checkboxIsVisible){
+    private fun changeVisibleCheckbox() {
+        if(viewmodel.gustosIsVisible.value){
             binding.listCheckbox.visibility = View.VISIBLE
         }else{
             binding.listCheckbox.visibility = View.GONE

@@ -45,6 +45,9 @@ class PizzaViewModel @Inject constructor(
     private val _credit = MutableStateFlow(1000)
     val credit : StateFlow<Int> get() = _credit
 
+    private val _gustosIsVisible = MutableStateFlow(true)
+    val gustosIsVisible: StateFlow<Boolean> get() = _gustosIsVisible
+
     private var _pizza = MutableStateFlow(
         Pizza(
             id = 0,
@@ -69,6 +72,10 @@ class PizzaViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
+    }
+
+    fun changeGustosVisibility(){
+        _gustosIsVisible.value = !_gustosIsVisible.value
     }
 
     fun addQuantity() {
