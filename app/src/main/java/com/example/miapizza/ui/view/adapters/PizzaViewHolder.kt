@@ -11,12 +11,12 @@ class PizzaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = PizzaItemBinding.bind(view)
 
-    fun render(pizza : Pizza, onClickListener:(Pizza) -> Unit){
+    fun render(pizza : Pizza, onClick: (Pizza) -> Unit){
         binding.pizzaTitle.text = pizza.title
         binding.pizzaDescription.text = pizza.description
         binding.pizzaPrice.text = pizza.price.toString()
         Glide.with(binding.pizzaImage.context).load(pizza.image).into(binding.pizzaImage)
 
-        itemView.setOnClickListener { onClickListener(pizza) }
+        itemView.setOnClickListener { onClick(pizza) }
     }
 }

@@ -34,7 +34,7 @@ class PizzaApi @Inject constructor(){
                 price = 200,
             ),
             PizzaModel(
-                id = 3,
+                id = 4,
                 title = "Pizza con Panceta",
                 image = R.drawable.bacon,
                 ingredients = mutableListOf("Panceta"),
@@ -42,7 +42,7 @@ class PizzaApi @Inject constructor(){
                 price = 300,
             ),
             PizzaModel(
-                id = 4,
+                id = 5,
                 title = "Pizza con Aceituna",
                 image = R.drawable.aceituna,
                 ingredients = mutableListOf("Aceituna"),
@@ -50,7 +50,7 @@ class PizzaApi @Inject constructor(){
                 price = 350,
             ),
             PizzaModel(
-                id = 5,
+                id = 6,
                 title = "Fugazza",
                 image = R.drawable.fugazza,
                 ingredients = mutableListOf("Cebolla", "Queso parmesano"),
@@ -58,7 +58,7 @@ class PizzaApi @Inject constructor(){
                 price = 200,
             ),
             PizzaModel(
-                id = 6,
+                id = 7,
                 title = "Pizza con panceta",
                 image = R.drawable.bacon,
                 ingredients = mutableListOf("Panceta"),
@@ -66,7 +66,7 @@ class PizzaApi @Inject constructor(){
                 price = 350,
             ),
             PizzaModel(
-                id = 7,
+                id = 8,
                 title = "Pizza con piña",
                 image = R.drawable.anana,
                 ingredients = mutableListOf("Jamon","Piña"),
@@ -74,7 +74,7 @@ class PizzaApi @Inject constructor(){
                 price = 350,
             ),
             PizzaModel(
-                id = 8,
+                id = 9,
                 title = "Pizza con panceta y atun",
                 image = R.drawable.bacon_atun,
                 ingredients = mutableListOf("Panceta", "Atun"),
@@ -82,7 +82,7 @@ class PizzaApi @Inject constructor(){
                 price = 350,
             ),
             PizzaModel(
-                id = 9,
+                id = 10,
                 title = "Pizza con lechuga, pepino y huevo",
                 image = R.drawable.anana,
                 ingredients = mutableListOf("Lechuga", "Pepino", "Huevo"),

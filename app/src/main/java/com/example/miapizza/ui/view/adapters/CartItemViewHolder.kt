@@ -18,7 +18,7 @@ class CartItemViewHolder(view: View) : RecyclerView.ViewHolder(view){
         onClickAdd: (CartItem, Int) -> Unit
     ){
         binding.pizzaTitle.text = cartItem.pizza.title
-        binding.pizzaPrice.text = cartItem.pizza.price.toString()
+        binding.pizzaPrice.text = (cartItem.pizza.price * cartItem.quantity).toString()
         binding.textQuantity.text = cartItem.quantity.toString()
 
         Glide.with(binding.pizzaImage.context).load(cartItem.pizza.image).into(binding.pizzaImage)

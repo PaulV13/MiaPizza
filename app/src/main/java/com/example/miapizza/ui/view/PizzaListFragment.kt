@@ -1,5 +1,6 @@
 package com.example.miapizza.ui.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,10 +12,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentPizzaListBinding
 import com.example.miapizza.ui.view.adapters.PizzaAdapter
-import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
 import com.example.miapizza.domain.model.Pizza
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,52 +43,36 @@ class PizzaListFragment @Inject constructor() : Fragment(R.layout.fragment_pizza
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val pizzaList = viewmodel.listPizzas.value
-
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
-        lifecycleScope.launch {
-            viewmodel.isLoading.collect {
-                binding.progress.isVisible = it
-            }
-        }
+        viewmodel.resetQuantity()
 
-        lifecycleScope.launch {
-            viewmodel.listPizzas.collect{ pizzas ->
-                adapter = PizzaAdapter(pizzas) { onItemSelected(it) }
+        lifecycleScope.launchWhenStarted{
+            viewmodel.state.collect{ state ->
+                binding.progress.visibility = if(state.loading) View.VISIBLE else View.GONE
+                adapter = PizzaAdapter(state.pizzas, onClick = {
+                    lifecycleScope.launch{
+                        viewmodel.getPizza(it)
+                        Navigation.findNavController(binding.recyclerView).navigate(R.id.action_pizzaList_to_pizzaDetail)
+                    }
+                })
                 binding.recyclerView.adapter = adapter
+                adapter.notifyDataSetChanged()
+
+                if(state.listCart.isEmpty()) binding.bottomBar.visibility = View.GONE else View.VISIBLE
+
+                binding.buttonPrice.text = viewmodel.totalPriceCart().toString()
+                binding.chip.text = viewmodel.totalQuantiyCart().toString()
+
+                binding.buttonCart.setOnClickListener {
+                    Navigation.findNavController(binding.recyclerView).navigate(R.id.action_pizzaList_to_cartFragment)
+                }
             }
-        }
-
-        binding.buttonOrange.setOnClickListener {
-            viewmodel.updateSubTotalPrice()
-            Navigation.findNavController(binding.searchView).navigate(R.id.action_pizzaList_to_cartFragment)
-        }
-
-        if(viewmodel.listCartItem.value.size > 0){
-            binding.buttonOrange.visibility = View.VISIBLE
-        }else{
-            binding.buttonOrange.visibility = View.GONE
-        }
-
-        binding.chip4.text = viewmodel.sizeCartItem().toString()
-        binding.buttonPrice.text = viewmodel.priceCartItem().toString()
-
-        binding.searchView.addTextChangedListener { pizzaFilter ->
-            val pizzasFiltered = pizzaList.filter { pizza -> pizza.title.lowercase().contains(pizzaFilter.toString().lowercase()) }
-            adapter.updatePizzas(pizzasFiltered)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun onItemSelected(pizza : Pizza){
-        viewmodel.selectedPizza(pizza)
-        viewmodel.resetQuantity()
-        viewmodel.setCurrentPrice(pizza)
-        Navigation.findNavController(binding.recyclerView).navigate(R.id.action_pizzaList_to_pizzaDetail)
     }
 }

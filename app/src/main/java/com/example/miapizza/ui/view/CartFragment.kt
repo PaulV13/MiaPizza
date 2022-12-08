@@ -1,5 +1,7 @@
 package com.example.miapizza.ui.view
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentCartBinding
-import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.ui.view.adapters.CartItemAdapter
-import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -38,77 +40,75 @@ class CartFragment @Inject constructor()  : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launchWhenStarted {
-            viewmodel.subTotalPrice.collect{ subTotalPrice ->
-                binding.subtotalPrice.text = subTotalPrice.toString()
-            }
-        }
-
-        binding.sendPrice.text = viewmodel.priceSend.value.toString()
-
-        lifecycleScope.launchWhenStarted {
-            viewmodel.totalPrice.collect{
-                binding.totalPrice.text = viewmodel.totalPrice.value.toString()
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewmodel.credit.collect{
-                binding.credit.text = viewmodel.credit.value.toString()
-            }
-        }
-
-        binding.totalPrice.setOnClickListener {
-            viewmodel.updateCredit()
-        }
-
-        adapter = CartItemAdapter(
-            cartItemList = viewmodel.listCartItem.value,
-            onClickMinus = {cartItem, position -> minusQuantityItem(cartItem, position)},
-            onClickAdd = {cartItem, position -> addQuantityItem(cartItem, position)}
-        )
-
         binding.rvList.layoutManager = LinearLayoutManager(context)
-        binding.rvList.adapter = adapter
+
+        viewmodel.updateSubtotalPriceCart().toString()
+        viewmodel.updateTotalPrice().toString()
+
+        lifecycleScope.launchWhenStarted{
+            viewmodel.state.collect{ state ->
+                adapter = CartItemAdapter(
+                    cartItemList = state.listCart,
+                    onClickAdd = { cartItem, position ->
+                        viewmodel.addCartItemQuantity(cartItem)
+                        viewmodel.updatePriceCartItem(cartItem)
+                        viewmodel.updateSubtotalPriceCart().toString()
+                        viewmodel.updateTotalPrice().toString()
+                        adapter.notifyItemChanged(position)
+                    },
+                    onClickMinus = { cartItem, position ->
+                        if(cartItem.quantity > 1){
+                            viewmodel.minusCartItemQuantity(cartItem)
+                            viewmodel.updatePriceCartItem(cartItem)
+                        }else{
+                            viewmodel.deleteItemCart(cartItem)
+                            adapter.notifyItemRemoved(position)
+                            if(state.listCart.isEmpty()) Navigation.findNavController(binding.cardView).popBackStack()
+                        }
+                        viewmodel.updateSubtotalPriceCart().toString()
+                        viewmodel.updateTotalPrice().toString()
+                        adapter.notifyItemChanged(position)
+                    }
+                )
+
+                binding.subtotalPrice.text = state.subTotalPriceCart.toString()
+                binding.extraPrice.text = state.extraPriceCart.toString()
+                binding.totalPrice.text = state.totalPriceCart.toString()
+                binding.credit.text = state.credits.toString()
+
+                binding.rvList.adapter = adapter
+            }
+        }
+
+        binding.totalPrice.setOnClickListener { viewmodel.addCredits() }
 
         binding.imageBack.setOnClickListener {
             Navigation.findNavController(it).popBackStack()
         }
 
-        binding.btnPagar.setOnClickListener {
-
-            if(viewmodel.credit.value < viewmodel.totalPrice.value){
-                Toast.makeText(context,"No tiene creditos suficientes para finalizar compra",Toast.LENGTH_LONG).show()
-            }else{
-                viewmodel.descountCredit()
+        binding.btnPagar.setOnClickListener{
+            if(viewmodel.state.value.credits < viewmodel.state.value.totalPriceCart){
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("No tiene creditos suficientes para realizar la compra.")
+                    .setMessage("Truco (Si preciona en el precio total puede aumentar sus creditos).")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                val dialog = builder.create()
+                dialog.show()
+            }else {
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Pedido realizado correctamente")
+                    .setMessage("Gracias por utilizar exte proyecto.\n" +
+                            " Espero disfrute de su pedido. :)")
+                    .setPositiveButton("OK") { _, _ ->
+                        Navigation.findNavController(it).navigate(R.id.action_cartFragment_to_pizzaList)
+                    }
+                val dialog = builder.create()
+                dialog.show()
                 viewmodel.resetCart()
-                Navigation.findNavController(it).popBackStack()
+                viewmodel.descountTotalPrice()
             }
-        }
-    }
-
-    private fun addQuantityItem(cartItem: CartItem, position: Int){
-        viewmodel.addCartItemQuantity(cartItem)
-        viewmodel.updateSubTotalPrice()
-        adapter.notifyItemChanged(position)
-    }
-
-    private fun minusQuantityItem(cartItem: CartItem, position: Int) {
-        viewmodel.minusCartItemQuantity(cartItem)
-        viewmodel.updateSubTotalPrice()
-        adapter.notifyItemChanged(position)
-
-        if(cartItem.quantity == 0){
-            deleteItem(cartItem, position)
-        }
-    }
-
-    private fun deleteItem(cartItem: CartItem, position: Int){
-        viewmodel.removeItemCart(cartItem)
-        adapter.notifyItemRemoved(position)
-
-        if(viewmodel.listCartItem.value.isEmpty()){
-            Navigation.findNavController(binding.divider2).popBackStack()
         }
     }
 

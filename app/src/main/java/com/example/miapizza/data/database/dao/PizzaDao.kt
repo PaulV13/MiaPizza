@@ -16,6 +16,9 @@ interface PizzaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pizzas: MutableList<PizzaEntity>)
 
+    @Query("SELECT * FROM pizza_table WHERE title = :title")
+    suspend fun getPizza(title: String): PizzaEntity
+
     @Query("DELETE FROM pizza_table")
     suspend fun deleteAllPizzas()
 

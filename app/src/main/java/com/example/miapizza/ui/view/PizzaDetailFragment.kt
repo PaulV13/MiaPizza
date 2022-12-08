@@ -13,11 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.miapizza.R
-import com.example.miapizza.data.database.dao.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
 import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.databinding.FragmentPizzaDetailBinding
 import com.example.miapizza.domain.model.Pizza
+import com.example.miapizza.ui.view.adapters.PizzaAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -40,15 +42,20 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val pizza: Pizza = viewmodel.pizza.value
+        val pizza: Pizza = viewmodel.state.value.pizzaSelected
 
         Glide.with(this).load(pizza.image).into(binding.image)
+
         binding.title.text = pizza.title
         binding.price.text = pizza.price.toString()
 
-        binding.buttonPrice.text = pizza.price.toString()
-        binding.chip4.text = pizza.id.toString()
-        binding.textQuantity.text = pizza.id.toString()
+        lifecycleScope.launchWhenStarted{
+            viewmodel.state.collect{ state ->
+                binding.chip.text = state.pizzaSelectedQuantity.toString()
+                binding.quantity.text = state.pizzaSelectedQuantity.toString()
+                binding.buttonPrice.text = (pizza.price * state.pizzaSelectedQuantity).toString()
+            }
+        }
 
         binding.imageBack.setOnClickListener {
             Navigation.findNavController(it).popBackStack()
@@ -56,162 +63,66 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
 
         binding.listCheckbox.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        binding.iconUp.setOnClickListener {
-            if(viewmodel.gustosIsVisible.value){
-                it.rotationX = 180f
-            }else{
-                it.rotationX = 0f
-            }
+        binding.symbolAdd.setOnClickListener { viewmodel.addQuantity() }
+        binding.symbolMinus.setOnClickListener { viewmodel.minusQuantity() }
 
-            viewmodel.changeGustosVisibility()
-
-            changeVisibleCheckbox()
-        }
-
-        binding.symbolMinus.setOnClickListener {
-            if(viewmodel.currentQuantity.value > 1) {
-                viewmodel.removeQuantity()
-            }
-            viewmodel.updatePrice(pizza)
-        }
-
-        updateCheckBox(pizza)
-
-        binding.checkbox1.setOnClickListener {
-            onCheckboxClicked(it, pizza)
-        }
-        binding.checkbox2.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-        binding.checkbox3.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-        binding.checkbox4.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-        binding.checkbox5.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-        binding.checkbox6.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-        binding.checkbox7.setOnClickListener {
-            onCheckboxClicked(it,pizza)
-        }
-
-        binding.symbolAdd.setOnClickListener {
-            viewmodel.addQuantity()
-            viewmodel.updatePrice(pizza)
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewmodel.currentQuantity.collect{
-                binding.textQuantity.text = it.toString()
-                binding.chip4.text = it.toString()
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewmodel.currentPrice.collect { binding.buttonPrice.text = it.toString() }
-        }
-
-        binding.buttonOrange.setOnClickListener {
-            val cartItem = CartItem(pizza, viewmodel.currentQuantity.value, viewmodel.currentQuantity.value * pizza.price)
-            val list = viewmodel.listCartItem.value
-            list.add(cartItem)
-
+        binding.buttonAdd.setOnClickListener {
+            viewmodel.createItemCart()
+            viewmodel.addItemCart()
             Navigation.findNavController(it).popBackStack()
         }
+
+        onCheckboxClick(pizza)
     }
 
-    private fun updateCheckBox(pizza: Pizza) {
-        for (ingredient in pizza.ingredients){
-            if(ingredient == binding.checkbox1.text){
-                binding.checkbox1.isChecked = true
-            }
-            if(ingredient == binding.checkbox2.text){
-                binding.checkbox2.isChecked = true
-            }
-            if(ingredient == binding.checkbox3.text){
-                binding.checkbox3.isChecked = true
-            }
-            if(ingredient == binding.checkbox4.text){
-                binding.checkbox4.isChecked = true
-            }
-            if(ingredient == binding.checkbox5.text){
-                binding.checkbox5.isChecked = true
-            }
-            if(ingredient == binding.checkbox6.text){
-                binding.checkbox6.isChecked = true
-            }
-            if(ingredient == binding.checkbox7.text){
-                binding.checkbox7.isChecked = true
+    private fun onCheckboxClick(pizza: Pizza) {
+        binding.checkbox1.setOnClickListener {
+            if(binding.checkbox1.isChecked){
+                pizza.ingredients.add("Panceta")
+            }else{
+                pizza.ingredients.remove("Panceta")
             }
         }
-    }
-
-    private fun changeVisibleCheckbox() {
-        if(viewmodel.gustosIsVisible.value){
-            binding.listCheckbox.visibility = View.VISIBLE
-        }else{
-            binding.listCheckbox.visibility = View.GONE
+        binding.checkbox2.setOnClickListener {
+            if(binding.checkbox2.isChecked){
+                pizza.ingredients.add("Aceituna")
+            }else{
+                pizza.ingredients.remove("Aceituna")
+            }
         }
-    }
-
-    private fun onCheckboxClicked(view: View, pizza: Pizza) {
-        if (view is CheckBox) {
-            val checked: Boolean = view.isChecked
-
-            when (view.id) {
-                R.id.checkbox1 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox1.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox1.text.toString())
-                    }
-                }
-                R.id.checkbox2 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox2.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox2.text.toString())
-                    }
-                }
-                R.id.checkbox3 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox3.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox3.text.toString())
-                    }
-                }
-                R.id.checkbox4 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox4.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox4.text.toString())
-                    }
-                }
-                R.id.checkbox5 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox5.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox5.text.toString())
-                    }
-                }
-                R.id.checkbox6 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox6.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox6.text.toString())
-                    }
-                }
-                R.id.checkbox7 -> {
-                    if (checked) {
-                        pizza.ingredients.add(binding.checkbox7.text.toString())
-                    } else {
-                        pizza.ingredients.remove(binding.checkbox7.text.toString())
-                    }
-                }
+        binding.checkbox3.setOnClickListener {
+            if(binding.checkbox3.isChecked){
+                pizza.ingredients.add("Jamon")
+            }else{
+                pizza.ingredients.remove("Jamon")
+            }
+        }
+        binding.checkbox4.setOnClickListener {
+            if(binding.checkbox4.isChecked){
+                pizza.ingredients.add("Anana")
+            }else{
+                pizza.ingredients.remove("Anana")
+            }
+        }
+        binding.checkbox5.setOnClickListener {
+            if(binding.checkbox5.isChecked){
+                pizza.ingredients.add("Huevo")
+            }else{
+                pizza.ingredients.remove("Huevo")
+            }
+        }
+        binding.checkbox6.setOnClickListener {
+            if(binding.checkbox6.isChecked){
+                pizza.ingredients.add("Lechuga")
+            }else{
+                pizza.ingredients.remove("Lechuga")
+            }
+        }
+        binding.checkbox7.setOnClickListener {
+            if(binding.checkbox7.isChecked){
+                pizza.ingredients.add("Pepino")
+            }else{
+                pizza.ingredients.remove("Pepino")
             }
         }
     }

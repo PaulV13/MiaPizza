@@ -74,7 +74,7 @@
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/button_orange"
+            android:id="@+id/button_cart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -86,7 +86,7 @@
             >
 
             <TextView
-                android:id="@+id/chip4"
+                android:id="@+id/chip"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:textStyle="bold"
@@ -110,9 +110,9 @@
                 android:textColor="@color/white"
                 android:layout_margin="8dp"
                 android:text="@string/btn_pedido"
-                app:layout_constraintTop_toTopOf="@+id/chip4"
-                app:layout_constraintBottom_toBottomOf="@+id/chip4"
-                app:layout_constraintStart_toEndOf="@+id/chip4"
+                app:layout_constraintTop_toTopOf="@+id/chip"
+                app:layout_constraintBottom_toBottomOf="@+id/chip"
+                app:layout_constraintStart_toEndOf="@+id/chip"
                 app:layout_constraintEnd_toStartOf="@+id/button_symbol" />
 
             <TextView

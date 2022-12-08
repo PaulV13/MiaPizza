@@ -30,4 +30,8 @@ class PizzaRepository @Inject constructor(
     suspend fun clearPizzas(){
         pizzaDao.deleteAllPizzas()
     }
+
+    suspend fun getPizza(title: String): Pizza{
+        return pizzaDao.getPizza(title).toDomain()
+    }
 }

@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.miapizza.R
 import com.example.miapizza.domain.model.Pizza
 
-class PizzaAdapter(private var pizzaList: List<Pizza>,
-                   private val onClickListener:(Pizza) -> Unit): RecyclerView.Adapter<PizzaViewHolder>() {
+class PizzaAdapter(private var pizzaList: List<Pizza>, private var onClick: (Pizza) -> Unit): RecyclerView.Adapter<PizzaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PizzaViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -16,13 +15,8 @@ class PizzaAdapter(private var pizzaList: List<Pizza>,
 
     override fun onBindViewHolder(viewHolder: PizzaViewHolder, position: Int) {
         val item = pizzaList[position]
-        viewHolder.render(item, onClickListener)
+        viewHolder.render(item,onClick)
     }
 
     override fun getItemCount(): Int = pizzaList.size
-
-    fun updatePizzas(pizzaList: List<Pizza>){
-        this.pizzaList = pizzaList
-        notifyDataSetChanged()
-    }
 }
