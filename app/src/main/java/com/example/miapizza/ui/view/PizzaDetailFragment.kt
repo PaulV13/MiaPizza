@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,12 +12,9 @@ import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.miapizza.R
 import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
-import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.databinding.FragmentPizzaDetailBinding
 import com.example.miapizza.domain.model.Pizza
-import com.example.miapizza.ui.view.adapters.PizzaAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -72,57 +67,73 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
             Navigation.findNavController(it).popBackStack()
         }
 
+        selectIngredients(pizza)
         onCheckboxClick(pizza)
+    }
+
+    private fun selectIngredients(pizza: Pizza) {
+        for(ingredient in pizza.ingredients){
+            when(ingredient){
+                resources.getString(R.string.panceta) -> { binding.checkbox1.isChecked = true }
+                resources.getString(R.string.aceituna) -> { binding.checkbox2.isChecked = true }
+                resources.getString(R.string.jamon) -> { binding.checkbox3.isChecked = true }
+                resources.getString(R.string.anana) -> { binding.checkbox4.isChecked = true }
+                resources.getString(R.string.huevo) -> { binding.checkbox5.isChecked = true }
+                resources.getString(R.string.lechuga) -> { binding.checkbox6.isChecked = true }
+                resources.getString(R.string.pepino) -> { binding.checkbox7.isChecked = true }
+                else -> {}
+            }
+        }
     }
 
     private fun onCheckboxClick(pizza: Pizza) {
         binding.checkbox1.setOnClickListener {
             if(binding.checkbox1.isChecked){
-                pizza.ingredients.add("Panceta")
+                viewmodel.addIngredient(resources.getString(R.string.panceta))
             }else{
-                pizza.ingredients.remove("Panceta")
+                viewmodel.removeIngredient(resources.getString(R.string.panceta))
             }
         }
         binding.checkbox2.setOnClickListener {
             if(binding.checkbox2.isChecked){
-                pizza.ingredients.add("Aceituna")
+                viewmodel.addIngredient(resources.getString(R.string.aceituna))
             }else{
-                pizza.ingredients.remove("Aceituna")
+                viewmodel.removeIngredient(resources.getString(R.string.aceituna))
             }
         }
         binding.checkbox3.setOnClickListener {
             if(binding.checkbox3.isChecked){
-                pizza.ingredients.add("Jamon")
+                viewmodel.addIngredient(resources.getString(R.string.jamon))
             }else{
-                pizza.ingredients.remove("Jamon")
+                viewmodel.removeIngredient(resources.getString(R.string.jamon))
             }
         }
         binding.checkbox4.setOnClickListener {
             if(binding.checkbox4.isChecked){
-                pizza.ingredients.add("Anana")
+                viewmodel.addIngredient(resources.getString(R.string.anana))
             }else{
-                pizza.ingredients.remove("Anana")
+                viewmodel.removeIngredient(resources.getString(R.string.anana))
             }
         }
         binding.checkbox5.setOnClickListener {
             if(binding.checkbox5.isChecked){
-                pizza.ingredients.add("Huevo")
+                viewmodel.addIngredient(resources.getString(R.string.huevo))
             }else{
-                pizza.ingredients.remove("Huevo")
+                viewmodel.removeIngredient(resources.getString(R.string.huevo))
             }
         }
         binding.checkbox6.setOnClickListener {
             if(binding.checkbox6.isChecked){
-                pizza.ingredients.add("Lechuga")
+                viewmodel.addIngredient(resources.getString(R.string.lechuga))
             }else{
-                pizza.ingredients.remove("Lechuga")
+                viewmodel.removeIngredient(resources.getString(R.string.lechuga))
             }
         }
         binding.checkbox7.setOnClickListener {
             if(binding.checkbox7.isChecked){
-                pizza.ingredients.add("Pepino")
+                viewmodel.addIngredient(resources.getString(R.string.pepino))
             }else{
-                pizza.ingredients.remove("Pepino")
+                viewmodel.removeIngredient(resources.getString(R.string.pepino))
             }
         }
     }

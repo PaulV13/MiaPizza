@@ -1,13 +1,11 @@
 package com.example.miapizza.ui.view
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -89,8 +87,8 @@ class CartFragment @Inject constructor()  : Fragment(){
         binding.btnPagar.setOnClickListener{
             if(viewmodel.state.value.credits < viewmodel.state.value.totalPriceCart){
                 val builder = AlertDialog.Builder(context)
-                builder.setTitle("No tiene creditos suficientes para realizar la compra.")
-                    .setMessage("Truco (Si preciona en el precio total puede aumentar sus creditos).")
+                builder.setTitle(resources.getString(R.string.titleDialogCancel))
+                    .setMessage(resources.getString(R.string.messageDialogCancel))
                     .setPositiveButton("OK") { dialog, _ ->
                         dialog.cancel()
                     }
@@ -98,16 +96,15 @@ class CartFragment @Inject constructor()  : Fragment(){
                 dialog.show()
             }else {
                 val builder = AlertDialog.Builder(context)
-                builder.setTitle("Pedido realizado correctamente")
-                    .setMessage("Gracias por utilizar exte proyecto.\n" +
-                            " Espero disfrute de su pedido. :)")
+                builder.setTitle(resources.getString(R.string.messageDialogOk))
+                    .setMessage(resources.getString(R.string.messageDialogOk))
                     .setPositiveButton("OK") { _, _ ->
                         Navigation.findNavController(it).navigate(R.id.action_cartFragment_to_pizzaList)
                     }
                 val dialog = builder.create()
                 dialog.show()
                 viewmodel.resetCart()
-                viewmodel.descountTotalPrice()
+                viewmodel.discountTotalPrice()
             }
         }
     }

@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.miapizza.data.database.entities.PizzaEntity
-import javax.inject.Inject
 
 @Dao
 interface PizzaDao {

@@ -62,7 +62,7 @@ class PizzaViewModel @Inject constructor(
     }
 
     fun addItemCart(){
-        var listCart = _state.value.listCart
+        val listCart = _state.value.listCart
         listCart.add(_state.value.itemCart)
         _state.update {
             it.copy(
@@ -80,7 +80,7 @@ class PizzaViewModel @Inject constructor(
         return totalPrice
     }
 
-    fun totalQuantiyCart(): Int {
+    fun totalQuantityCart(): Int {
         val listCart = _state.value.listCart
         var totalQuantity = 0
         for(item in listCart){
@@ -100,7 +100,7 @@ class PizzaViewModel @Inject constructor(
     }
 
     fun deleteItemCart(cartItem: CartItem) {
-        var listCart = _state.value.listCart
+        val listCart = _state.value.listCart
         listCart.remove(cartItem)
         _state.update {
             it.copy(
@@ -136,9 +136,25 @@ class PizzaViewModel @Inject constructor(
         _state.update { it.copy( listCart = mutableListOf()) }
     }
 
-    fun descountTotalPrice() {
+    fun discountTotalPrice() {
         val credits = _state.value.credits - _state.value.totalPriceCart
         _state.update { it.copy(credits = credits) }
+    }
+
+    fun addIngredient(ingredient: String) {
+        val ingredients = _state.value.pizzaSelected.ingredients
+        ingredients.add(ingredient)
+
+        val pizza = _state.value.pizzaSelected.copy(ingredients = ingredients)
+        _state.update { it.copy(pizzaSelected = pizza) }
+    }
+
+    fun removeIngredient(ingredient: String) {
+        val ingredients = _state.value.pizzaSelected.ingredients
+        ingredients.remove(ingredient)
+
+        val pizza = _state.value.pizzaSelected.copy(ingredients = ingredients)
+        _state.update { it.copy(pizzaSelected = pizza) }
     }
 
     data class UiState(
