@@ -2,6 +2,7 @@ package com.example.miapizza.data.repo
 
 import com.example.miapizza.data.database.dao.PizzaDao
 import com.example.miapizza.data.database.entities.PizzaEntity
+import com.example.miapizza.data.model.CartItem
 import com.example.miapizza.data.model.PizzaModel
 import com.example.miapizza.data.model.PizzaApi
 import com.example.miapizza.domain.model.Pizza

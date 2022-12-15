@@ -21,8 +21,7 @@
     <string name="btn_pedido">Ir a pedido</string>
     <string name="credit">Credit:</string>
     <string name="titleDialogOk">Pedido realizado correctamente</string>
-    <string name="messageDialogOk">Gracias por utilizar exte proyecto.\n" +
-                            " Espero disfrute de su pedido. :)</string>
+    <string name="messageDialogOk">Gracias por utilizar exte proyecto. Espero disfrute de su pedido. :)</string>
     <string name="titleDialogCancel">No tiene creditos suficientes para realizar la compra.</string>
     <string name="messageDialogCancel">Truco (Si preciona en el precio total puede aumentar sus creditos).</string>
 </resources>

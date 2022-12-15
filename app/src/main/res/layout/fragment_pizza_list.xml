@@ -27,7 +27,7 @@
     </Toolbar>
 
     <EditText
-        android:id="@+id/searchView"
+        android:id="@+id/edit_filter"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:background="@drawable/custom_background"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_filter" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_bar"

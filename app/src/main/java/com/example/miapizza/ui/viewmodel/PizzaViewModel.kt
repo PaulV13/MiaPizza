@@ -1,8 +1,10 @@
-package com.example.miapizza.ui.view.viewmodel
+package com.example.miapizza.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.miapizza.data.model.CartItem
+import com.example.miapizza.domain.AddPizzaCartUseCase
+import com.example.miapizza.domain.DeletePizzaCartUseCase
 import com.example.miapizza.domain.GetPizzaUseCase
 import com.example.miapizza.domain.GetPizzasUseCase
 import com.example.miapizza.domain.model.Pizza
@@ -17,9 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class PizzaViewModel @Inject constructor(
    private val getPizzasUseCase: GetPizzasUseCase,
-   private val getPizzaUseCase: GetPizzaUseCase
+   private val getPizzaUseCase: GetPizzaUseCase,
+   private val addPizzaCart: AddPizzaCartUseCase,
+   private val deletePizzaCart: DeletePizzaCartUseCase
 ) : ViewModel() {
-
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
@@ -27,14 +30,14 @@ class PizzaViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _state.update { it.copy(loading = true) }
-            val pizzas = getPizzasUseCase.invoke()
+            val pizzas = getPizzasUseCase()
             _state.update { it.copy(pizzas = pizzas) }
             _state.update { it.copy(loading = false) }
         }
     }
 
     suspend fun getPizza(pizza: Pizza) {
-        _state.update { it.copy(pizzaSelected = getPizzaUseCase.invoke(pizza.title)) }
+        _state.update { it.copy(pizzaSelected = getPizzaUseCase(pizza.title)) }
     }
 
     fun addQuantity() {
@@ -62,8 +65,7 @@ class PizzaViewModel @Inject constructor(
     }
 
     fun addItemCart(){
-        val listCart = _state.value.listCart
-        listCart.add(_state.value.itemCart)
+        val listCart = addPizzaCart(_state.value.listCart, _state.value.itemCart)
         _state.update {
             it.copy(
                 listCart = listCart
@@ -100,8 +102,7 @@ class PizzaViewModel @Inject constructor(
     }
 
     fun deleteItemCart(cartItem: CartItem) {
-        val listCart = _state.value.listCart
-        listCart.remove(cartItem)
+        val listCart = deletePizzaCart(_state.value.listCart, cartItem)
         _state.update {
             it.copy(
                 listCart = listCart

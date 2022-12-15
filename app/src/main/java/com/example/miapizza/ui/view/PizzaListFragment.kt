@@ -5,14 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentPizzaListBinding
+import com.example.miapizza.domain.model.Pizza
 import com.example.miapizza.ui.view.adapters.PizzaAdapter
-import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.viewmodel.PizzaViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,10 +39,15 @@ class PizzaListFragment @Inject constructor() : Fragment(R.layout.fragment_pizza
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var listPizza:MutableList<Pizza> = viewmodel.state.value.pizzas.toMutableList()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-
         viewmodel.resetQuantity()
+
+        binding.editFilter.addTextChangedListener {
+            val filteredPizzas = listPizza.filter { pizza -> pizza.title.uppercase().contains(it.toString().uppercase()) }
+            adapter.updateListPizzas(filteredPizzas)
+        }
 
         lifecycleScope.launchWhenStarted{
             viewmodel.state.collect{ state ->

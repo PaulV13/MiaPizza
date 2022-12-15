@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.miapizza.R
 import com.example.miapizza.databinding.FragmentCartBinding
 import com.example.miapizza.ui.view.adapters.CartItemAdapter
-import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.viewmodel.PizzaViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -38,8 +38,6 @@ class CartFragment @Inject constructor()  : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvList.layoutManager = LinearLayoutManager(context)
-
         viewmodel.updateSubtotalPriceCart().toString()
         viewmodel.updateTotalPrice().toString()
 
@@ -58,6 +56,7 @@ class CartFragment @Inject constructor()  : Fragment(){
                         if(cartItem.quantity > 1){
                             viewmodel.minusCartItemQuantity(cartItem)
                             viewmodel.updatePriceCartItem(cartItem)
+                            adapter.notifyItemChanged(position)
                         }else{
                             viewmodel.deleteItemCart(cartItem)
                             adapter.notifyItemRemoved(position)
@@ -65,7 +64,6 @@ class CartFragment @Inject constructor()  : Fragment(){
                         }
                         viewmodel.updateSubtotalPriceCart().toString()
                         viewmodel.updateTotalPrice().toString()
-                        adapter.notifyItemChanged(position)
                     }
                 )
 
@@ -77,6 +75,8 @@ class CartFragment @Inject constructor()  : Fragment(){
                 binding.rvList.adapter = adapter
             }
         }
+
+        binding.rvList.layoutManager = LinearLayoutManager(context)
 
         binding.totalPrice.setOnClickListener { viewmodel.addCredits() }
 
@@ -96,7 +96,7 @@ class CartFragment @Inject constructor()  : Fragment(){
                 dialog.show()
             }else {
                 val builder = AlertDialog.Builder(context)
-                builder.setTitle(resources.getString(R.string.messageDialogOk))
+                builder.setTitle(resources.getString(R.string.titleDialogOk))
                     .setMessage(resources.getString(R.string.messageDialogOk))
                     .setPositiveButton("OK") { _, _ ->
                         Navigation.findNavController(it).navigate(R.id.action_cartFragment_to_pizzaList)

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.miapizza.R
 import com.example.miapizza.domain.model.Pizza
+import kotlinx.coroutines.flow.update
 
 class PizzaAdapter(private var pizzaList: List<Pizza>, private var onClick: (Pizza) -> Unit): RecyclerView.Adapter<PizzaViewHolder>() {
 
@@ -19,4 +20,9 @@ class PizzaAdapter(private var pizzaList: List<Pizza>, private var onClick: (Piz
     }
 
     override fun getItemCount(): Int = pizzaList.size
+
+    fun updateListPizzas(pizzas: List<Pizza>){
+        pizzaList = pizzas
+        notifyDataSetChanged()
+    }
 }

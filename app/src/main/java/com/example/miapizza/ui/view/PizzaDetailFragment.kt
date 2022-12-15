@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.miapizza.R
-import com.example.miapizza.ui.view.viewmodel.PizzaViewModel
+import com.example.miapizza.ui.viewmodel.PizzaViewModel
 import com.example.miapizza.databinding.FragmentPizzaDetailBinding
 import com.example.miapizza.domain.model.Pizza
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,8 +67,20 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
             Navigation.findNavController(it).popBackStack()
         }
 
+        var visible = true
+        binding.iconUp.setOnClickListener {
+            visible = !visible
+            if(visible){
+                it.rotation = 360f
+                binding.listCheckbox.visibility = View.VISIBLE
+            }else{
+                it.rotation = 180f
+                binding.listCheckbox.visibility = View.GONE
+            }
+        }
+
         selectIngredients(pizza)
-        onCheckboxClick(pizza)
+        onCheckboxClick()
     }
 
     private fun selectIngredients(pizza: Pizza) {
@@ -86,7 +98,7 @@ class PizzaDetailFragment @Inject constructor() : Fragment(R.layout.fragment_piz
         }
     }
 
-    private fun onCheckboxClick(pizza: Pizza) {
+    private fun onCheckboxClick() {
         binding.checkbox1.setOnClickListener {
             if(binding.checkbox1.isChecked){
                 viewmodel.addIngredient(resources.getString(R.string.panceta))
